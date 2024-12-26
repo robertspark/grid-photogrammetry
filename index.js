@@ -207,11 +207,13 @@ const Control = {
     </header>
     <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
 
-      <label>Search Location : </label>
+      <label for="flocation">Search Location : </label>
       <span class="align-middle">
         <input 
-          class="border block-inline text-right w-24" type="text"
-          name="location"
+          class="border block-inline text-right w-24" 
+          type="text"
+          id="flocation"
+          name="flocation"
         />
       </span>
 
