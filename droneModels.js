@@ -1,18 +1,11 @@
 export default [
   {
-    name: 'AIR 2S DJI',
+    name: 'DJI Air 2S',
+    sensorWidth: 13.31,
+    sensorHeight: 8.88,
     focalLength: 8.4,
     imageWidth: 5472,
-    imageHeight: 3648,
-    sensorWidth: 13.31,
-    sensorHeight: 8.88
-  }, {
-    name: 'Mavic Air',
-    sensorWidth: 6.3,
-    sensorHeight: 4.7,
-    focalLength: 4.9,
-    imageWidth: 4056,
-    imageHeight: 3040
+    imageHeight: 3648
   }, {
     name: 'DJI Air 2',
     sensorWidth: 6.4,
@@ -20,6 +13,13 @@ export default [
     focalLength: 4.49,
     imageWidth: 8000,
     imageHeight: 6000
+  }, {
+    name: 'DJI Mavic Air',
+    sensorWidth: 6.3,
+    sensorHeight: 4.7,
+    focalLength: 4.9,
+    imageWidth: 4056,
+    imageHeight: 3040
   }, {
     name: 'DJI Mavic Mini',
     sensorWidth: 6.3,
@@ -42,7 +42,7 @@ export default [
     imageWidth: 4000,
     imageHeight: 3000
   }, {
-    name: 'DJI Mini 3 Pro (12 MP)',
+    name: 'DJI Mini 3 or 4 Pro',
     sensorWidth: 9.7,
     sensorHeight: 7.3,
     focalLength: 6.72,
@@ -63,6 +63,13 @@ export default [
     imageWidth: 5472,
     imageHeight: 3648
   }, {
+    name: 'DJI Mavic 3 Hasselblad (Wide)',
+    sensorWidth: 17.4,
+    sensorHeight: 13.1,
+    focalLength: 12.29,
+    imageWidth: 5280,
+    imageHeight: 3956
+    }, {
     name: 'DJI Mavic 2 Zoom',
     sensorWidth: 6.3,
     sensorHeight: 4.7,
