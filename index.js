@@ -206,6 +206,16 @@ const Control = {
       > close </span> 
     </header>
     <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
+
+      <label>Search Location : </label>
+      <span class="align-middle">
+        <input 
+          class="border block-inline text-right w-24" type="text"
+          name="location"
+        />
+      </span>
+
+    
       <label>Drone Model : </label>
       <span class="align-middle">
         <select class="border block-inline text-left w-40" type="number" v-model="droneModel">
