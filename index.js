@@ -214,11 +214,13 @@ const Control = {
           type="text"
           id="flocation"
           name="flocation"
+          </>
         <button 
-        class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
-        v-on:click="Search"
-      >
-        />
+          class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
+          v-on:click="Location"
+          >
+          Search
+         </button>
       </span>
 
     
