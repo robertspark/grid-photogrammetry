@@ -42,6 +42,13 @@ export default [
     imageWidth: 4000,
     imageHeight: 3000
   }, {
+    name: 'DJI Mini 3 Pro (12 MP)',
+    sensorWidth: 9.7,
+    sensorHeight: 7.3,
+    focalLength: 6.72,
+    imageWidth: 4032,
+    imageHeight: 3024
+  }, {
     name: 'DJI Mavic AIR 2',
     sensorWidth: 6.4,
     sensorHeight: 4.8,
