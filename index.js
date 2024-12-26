@@ -207,13 +207,17 @@ const Control = {
     </header>
     <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
 
-      <label for="flocation">Search Location : </label>
+      <label for="flocation">Location : </label>
       <span class="align-middle">
         <input 
-          class="border block-inline text-right w-24" 
+          class="border block-inline text-right w-30" 
           type="text"
           id="flocation"
           name="flocation"
+        <button 
+        class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
+        v-on:click="Search"
+      >
         />
       </span>
 
