@@ -205,12 +205,12 @@ const Control = {
         v-on:click="toogleShow"
       > close </span> 
     </header>
-    <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
 
+    <div class="text-center mb-3">
       <label for="flocation">Location : </label>
       <span class="align-middle">
         <input 
-          class="border block-inline text-right w-26" 
+          class="border block-inline text-center w-24" 
           type="text"
           id="flocation"
           name="flocation"
@@ -222,8 +222,9 @@ const Control = {
           Search
          </button>
       </span>
+    </div>
 
-    
+     <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
       <label>Drone Model : </label>
       <span class="align-middle">
         <select class="border block-inline text-left w-40" type="number" v-model="droneModel">
