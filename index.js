@@ -215,13 +215,16 @@ const Control = {
           id="flocation"
           name="flocation"
           />
+        </span>
+     </div>
+     
+     <div class="text-center mb-3">
         <button 
           class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
           v-on:click="Location"
           >
           Search
          </button>
-      </span>
     </div>
 
      <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
