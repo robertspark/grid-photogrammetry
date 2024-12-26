@@ -210,11 +210,11 @@ const Control = {
       <label for="flocation">Location : </label>
       <span class="align-middle">
         <input 
-          class="border block-inline text-right w-30" 
+          class="border block-inline text-right w-26" 
           type="text"
           id="flocation"
           name="flocation"
-          </>
+          />
         <button 
           class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
           v-on:click="Location"
