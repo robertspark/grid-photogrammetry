@@ -210,7 +210,7 @@ const Control = {
       <label for="flocation">Location : </label>
       <span class="align-middle">
         <input 
-          class="border block-inline text-center w-24" 
+          class="border block-inline text-center w-28" 
           type="text"
           id="flocation"
           name="flocation"
