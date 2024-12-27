@@ -62,8 +62,8 @@ const initMap = () => {
   const map = new maplibregl.Map({
     container: 'map',
     style,
-    center: [-74.107807, 4.6482975], // [lng, lat]
-    zoom: 17
+    center: [0, 0], // [lng, lat]
+    zoom: 1
   })
 
   map.addControl(draw, 'top-right')
