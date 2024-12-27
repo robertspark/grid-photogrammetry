@@ -1,5 +1,26 @@
 export default [
   {
+	name: 'DJI Air 3S',
+    sensorWidth: 13.1072,
+    sensorHeight: 9.8304,
+    focalLength: 8.7,
+    imageWidth: 8192,
+    imageHeight: 6144
+  }, {
+    name: 'DJI Air 3 (48mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 8064,
+    imageHeight: 6048
+  }, {
+	name: 'DJI Air 3 (12mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 4032,
+    imageHeight: 3024
+  }, {
     name: 'DJI Air 2S',
     sensorWidth: 13.31,
     sensorHeight: 8.88,
@@ -21,33 +42,68 @@ export default [
     imageWidth: 4056,
     imageHeight: 3040
   }, {
+	name: 'DJI Mini 4 Pro (48mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 8064,
+    imageHeight: 6048
+  }, {
+	name: 'DJI Mini 4 Pro (12mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 4032,
+    imageHeight: 3024
+  }, {
+	name: 'DJI Mini 4 Pro (12mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 4032,
+    imageHeight: 3024
+  }, {
+	name: 'DJI Mini 3 & 3 Pro (48mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 8064,
+    imageHeight: 6048
+  }, {
+	name: 'DJI Mini 3 & 3 Pro (12mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 6.72,
+    imageWidth: 4032,
+    imageHeight: 3024
+  }, {
+	name: 'DJI Mini 4K / 2SE',
+    sensorWidth: 6.3,
+    sensorHeight: 4.7,
+    focalLength: 4.49,
+    imageWidth: 4000,
+    imageHeight: 3000
+  }, {
+	name: 'DJI Mini SE',
+    sensorWidth: 6.3,
+    sensorHeight: 4.7,
+    focalLength: 4.49,
+    imageWidth: 4000,
+    imageHeight: 3000
+  }, {
+	name: 'DJI Mini 2',
+    sensorWidth: 6.3,
+    sensorHeight: 4.7,
+    focalLength: 4.49,
+    imageWidth: 4000,
+    imageHeight: 3000
+  }, {
     name: 'DJI Mavic Mini',
     sensorWidth: 6.3,
     sensorHeight: 4.7,
     focalLength: 4.49,
     imageWidth: 4000,
     imageHeight: 3000
-  }, {
-    name: 'DJI Mini 2',
-    sensorWidth: 6.3,
-    sensorHeight: 4.7,
-    focalLength: 4.49,
-    imageWidth: 4000,
-    imageHeight: 3000
-  }, {
-    name: 'DJI Mini SE',
-    sensorWidth: 6.3,
-    sensorHeight: 4.7,
-    focalLength: 4.49,
-    imageWidth: 4000,
-    imageHeight: 3000
-  }, {
-    name: 'DJI Mini 3 or 4 Pro',
-    sensorWidth: 9.7,
-    sensorHeight: 7.3,
-    focalLength: 6.72,
-    imageWidth: 4032,
-    imageHeight: 3024
   }, {
     name: 'DJI Mavic AIR 2',
     sensorWidth: 6.4,
@@ -56,20 +112,41 @@ export default [
     imageWidth: 8000,
     imageHeight: 6000
   }, {
-    name: 'DJI Mavic Air 2S',
-    sensorWidth: 13.2,
-    sensorHeight: 8.8,
-    focalLength: 8.4,
-    imageWidth: 5472,
-    imageHeight: 3648
-  }, {
-    name: 'DJI Mavic 3 Hasselblad (Wide)',
+    name: 'DJI Mavic 3 Wide (24mm)',
     sensorWidth: 17.4,
     sensorHeight: 13.1,
     focalLength: 12.29,
     imageWidth: 5280,
     imageHeight: 3956
     }, {
+	name: 'DJI Mavic 3 Med(70mm/48mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 19.4,
+    imageWidth: 8064,
+    imageHeight: 6048
+    }, {
+	name: 'DJI Mavic 3 Med(70mm/12mp)',
+    sensorWidth: 9.690912,
+    sensorHeight: 7.27776,
+    focalLength: 19.4,
+    imageWidth: 4032,
+    imageHeight: 3024
+    }, {
+	name: 'DJI Mavic 3 Tele (166mm)',
+    sensorWidth: 6.3,
+    sensorHeight: 4.7,
+    focalLength: 30.71,
+    imageWidth: 4000,
+    imageHeight: 3000
+    }, {
+	name: 'DJI Mavic 2',
+    sensorWidth: 13.2,
+    sensorHeight: 8.8,
+    focalLength: 8.4,
+    imageWidth: 5472,
+    imageHeight: 3648
+  }, {
     name: 'DJI Mavic 2 Zoom',
     sensorWidth: 6.3,
     sensorHeight: 4.7,
@@ -84,14 +161,7 @@ export default [
     imageWidth: 5472,
     imageHeight: 3648
   }, {
-    name: 'DJI Phantom 3',
-    sensorWidth: 6.3,
-    sensorHeight: 4.7,
-    focalLength: 3.61,
-    imageWidth: 4000,
-    imageHeight: 3000
-  }, {
-    name: 'DJI Phantom 4',
+    name: 'DJI Phantom 3 & 4',
     sensorWidth: 6.3,
     sensorHeight: 4.7,
     focalLength: 3.61,
