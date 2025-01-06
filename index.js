@@ -340,14 +340,10 @@ const Control = {
         Download Litchi CSV
       </button>
     </div>
-	<div>
-    <button @click="clearPolylines">Clear Polylines</button>
+    <div>
+    	<button @click="clearPolylines">Clear Polylines</button>
     </div>
   </div>
-  `
-}
-    </div>
-  `,
 };
 
 const control = createApp(Control).mount('#control')
