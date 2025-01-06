@@ -126,16 +126,20 @@ const Control = {
        }
       });
     },
-    downloadLitchiCSV() {
-      if (!this.route) return;
+   downloadLitchiCSV () {
+      console.log('downloadLitchiCSV', this.route)
+      const head = 'latitude,longitude,altitude(m),heading(deg),curvesize(m),rotationdir,gimbalmode,gimbalpitchangle,actiontype1,actionparam1,actiontype2,actionparam2,actiontype3,actionparam3,actiontype4,actionparam4,actiontype5,actionparam5,actiontype6,actionparam6,actiontype7,actionparam7,actiontype8,actionparam8,actiontype9,actionparam9,actiontype10,actionparam10,actiontype11,actionparam11,actiontype12,actionparam12,actiontype13,actionparam13,actiontype14,actionparam14,actiontype15,actionparam15,altitudemode,speed(m/s),poi_latitude,poi_longitude,poi_altitude(m),poi_altitudemode,photo_timeinterval,photo_distinterval'
 
-      const header = 'latitude,longitude,altitude(m),heading(deg),curvesize(m),rotationdir,gimbalmode,gimbalpitchangle,actiontype1,actionparam1,...';
-      const data = this.route.reduce((acc, segment) => {
-        return `${acc}\n${segment[0].geometry.coordinates[1].toFixed(8)},${segment[0].geometry.coordinates[0].toFixed(8)},...`;
-      }, header);
+      if (this.route === null) return
 
-      download('waypoints.csv', data);
-    },
+      const data = this.route.reduce((aco, cur) => {
+        return `${aco}\n` +
+          `${cur[0].geometry.coordinates[1].toFixed(8)},${cur[0].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,${this.stepH * 1000}\n` +
+          `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
+      }, head)
+
+      download('waypoints.csv', data)
+    }
   },
   computed: {
     GDSW() {
