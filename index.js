@@ -99,7 +99,7 @@ const Control = {
                     satellite: {
                         type: 'raster',
                         tiles: [
-                            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=o1OcABF1Nt6XKoH1KXKv',
+                            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}@2x.jpg?key=o1OcABF1Nt6XKoH1KXKv',
                         ],
                         tileSize: 512,
                         attribution: '&copy; MapTiler &copy; OpenStreetMap Contributors',
