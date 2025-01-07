@@ -99,9 +99,9 @@ const Control = {
                     satellite: {
                         type: 'raster',
                         tiles: [
-                            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}@2x.jpg?key=o1OcABF1Nt6XKoH1KXKv',
+                            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}@2x.png?key=lSucBV15KQjGBpewU9Tx',
                         ],
-                        tileSize: 512,
+                        tileSize: 256,
                         attribution: '&copy; MapTiler &copy; OpenStreetMap Contributors',
                         maxzoom: 19,
                     },
