@@ -39,7 +39,6 @@ const initMap = () => {
             line_string: false,
             uncombine_features: false,
             point: false,
-            polygon: true,
             trash: true
         },
         defaultMode: 'draw_polygon',
