@@ -1,213 +1,236 @@
 /* global Vue, mitt, turf, Blob, MapboxDraw, maplibregl */
 import droneModels from './droneModels.js'
 
-const { createApp } = Vue
+const {
+    createApp
+} = Vue
 const emitter = mitt()
 const DEBUG = false
 
 Math.grados = radianes => {
-  return radianes * 180 / Math.PI
+    return radianes * 180 / Math.PI
 }
 
 Math.radianes = grados => {
-  return Math.PI * grados / 180
+    return Math.PI * grados / 180
 }
 
 const download = (filename, data) => {
-  console.log('download')
-  const blob = new Blob([data], { type: 'text/csv' })
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(blob, filename)
-  } else {
-    const elem = window.document.createElement('a')
-    elem.href = window.URL.createObjectURL(blob)
-    elem.download = filename
-    document.body.appendChild(elem)
-    elem.click()
-    document.body.removeChild(elem)
-  }
+    console.log('download')
+    const blob = new Blob([data], {
+        type: 'text/csv'
+    })
+    if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename)
+    } else {
+        const elem = window.document.createElement('a')
+        elem.href = window.URL.createObjectURL(blob)
+        elem.download = filename
+        document.body.appendChild(elem)
+        elem.click()
+        document.body.removeChild(elem)
+    }
 }
 
 const initMap = () => {
-  const draw = new MapboxDraw({
-    controls: {
-      combine_features: false,
-      line_string: false,
-      uncombine_features: false,
-      point: false,
-    },
-    defaultMode: 'draw_polygon',
-  });
-
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: {
-      version: 8,
-      sources: {
-        osm: {
-          type: 'raster',
-          tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '&copy; OpenStreetMap Contributors',
-          maxzoom: 19,
+    const draw = new MapboxDraw({
+        controls: {
+            combine_features: false,
+            line_string: false,
+            uncombine_features: false,
+            point: false,
         },
-      },
-      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
-    },
-    center: [0, 0], // [lng, lat]
-    zoom: 2,
-  });
+        defaultMode: 'draw_polygon',
+    });
 
-  map.addControl(draw, 'top-right');
-  return { map, draw };
+    const map = new maplibregl.Map({
+        container: 'map',
+        style: {
+            version: 8,
+            sources: {
+                osm: {
+                    type: 'raster',
+                    tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                    tileSize: 256,
+                    attribution: '&copy; OpenStreetMap Contributors',
+                    maxzoom: 19,
+                },
+            },
+            layers: [{
+                id: 'osm',
+                type: 'raster',
+                source: 'osm'
+            }],
+        },
+        center: [0, 0], // [lng, lat]
+        zoom: 2,
+    });
+
+    map.addControl(draw, 'top-right');
+    return {
+        map,
+        draw
+    };
 };
 
-const { map, draw } = initMap();
+const {
+    map,
+    draw
+} = initMap();
 
 const Control = {
-  data () {
-    return {
-      droneModels,
-      droneModel: 'custom',
-      focalLength: 8.4,
-      imageWidth: 5472,
-      imageHeight: 3648,
-      sensorWidth: 13.31,
-      sensorHeight: 8.88,
-      flyHeight: 50,
-      overlap: 80,
-      sidelap: 80,
-      angle: 270,
-      showFrames: false,
-      showCameras: true,
-      images: 0,
-      area: 0,
-      route: null,
-      show: true,
-	  locationQuery: '',
-    };
-  },
-  methods: {
-    toogleShow () {
-      this.show = !this.show
+    data() {
+        return {
+            droneModels,
+            droneModel: 'custom',
+            focalLength: 8.4,
+            imageWidth: 5472,
+            imageHeight: 3648,
+            sensorWidth: 13.31,
+            sensorHeight: 8.88,
+            flyHeight: 50,
+            overlap: 80,
+            sidelap: 80,
+            angle: 270,
+            showFrames: false,
+            showCameras: true,
+            images: 0,
+            area: 0,
+            route: null,
+            show: true,
+            locationQuery: '',
+        };
     },
-    setArea (area) {
-      this.area = area
-    },
-    setImages (images) {
-      this.images = images
-    },
-    setRoute (route) {
-      this.route = route
-    },
-	clearPolylines() {
-	  const layers = map.getStyle().layers;
-      layers.forEach(layer => {
-        if (layer.id.startsWith('polyline')) {
-          map.removeLayer(layer.id);
-          map.removeSource(layer.id);
+    methods: {
+        toogleShow() {
+            this.show = !this.show
+        },
+        setArea(area) {
+            this.area = area
+        },
+        setImages(images) {
+            this.images = images
+        },
+        setRoute(route) {
+            this.route = route
+        },
+        clearPolylines() {
+            const layers = map.getStyle().layers;
+            layers.forEach(layer => {
+                if (layer.id.startsWith('polyline')) {
+                    map.removeLayer(layer.id);
+                    map.removeSource(layer.id);
+                }
+            });
+        },
+        async searchLocation() {
+            if (!this.locationQuery.trim()) return;
+
+            const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(this.locationQuery)}&format=json&limit=1`;
+            try {
+                const response = await fetch(apiUrl);
+                const [location] = await response.json();
+
+                if (location) {
+                    const {
+                        lon,
+                        lat
+                    } = location;
+                    map.setCenter([parseFloat(lon), parseFloat(lat)]);
+                    map.setZoom(15);
+                } else {
+                    alert('Location not found. Please refine your search.');
+                }
+            } catch (error) {
+                console.error('Error searching location:', error);
+            }
+        },
+        downloadLitchiCSV() {
+            console.log('downloadLitchiCSV', this.route)
+            const head = 'latitude,longitude,altitude(m),heading(deg),curvesize(m),rotationdir,gimbalmode,gimbalpitchangle,actiontype1,actionparam1,actiontype2,actionparam2,actiontype3,actionparam3,actiontype4,actionparam4,actiontype5,actionparam5,actiontype6,actionparam6,actiontype7,actionparam7,actiontype8,actionparam8,actiontype9,actionparam9,actiontype10,actionparam10,actiontype11,actionparam11,actiontype12,actionparam12,actiontype13,actionparam13,actiontype14,actionparam14,actiontype15,actionparam15,altitudemode,speed(m/s),poi_latitude,poi_longitude,poi_altitude(m),poi_altitudemode,photo_timeinterval,photo_distinterval'
+
+            if (this.route === null) return
+
+            const data = this.route.reduce((aco, cur) => {
+                return `${aco}\n` +
+                    `${cur[0].geometry.coordinates[1].toFixed(8)},${cur[0].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,${this.stepH * 1000}\n` +
+                    `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
+            }, head)
+
+            download('waypoints.csv', data)
         }
-      });
     },
-	async searchLocation() {
-      if (!this.locationQuery.trim()) return;
-
-      const apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(this.locationQuery)}&format=json&limit=1`;
-      try {
-        const response = await fetch(apiUrl);
-        const [location] = await response.json();
-
-        if (location) {
-          const { lon, lat } = location;
-          map.setCenter([parseFloat(lon), parseFloat(lat)]);
-          map.setZoom(15);
-        } else {
-          alert('Location not found. Please refine your search.');
+    computed: {
+        GDSW() {
+            return ((this.sensorWidth / 10) / this.imageWidth) * (this.flyHeight * 100) / (this.focalLength / 10)
+        },
+        GDSH() {
+            return ((this.sensorHeight / 10) / this.imageHeight) * (this.flyHeight * 100) / (this.focalLength / 10)
+        },
+        CoverturaW() {
+            return (this.sensorWidth / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
+        },
+        CoverturaH() {
+            return (this.sensorHeight / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
+        },
+        stepW() {
+            return this.CoverturaW / 100000 * (1 - (this.sidelap / 100))
+        },
+        stepH() {
+            return this.CoverturaH / 100000 * (1 - (this.overlap / 100))
         }
-      } catch (error) {
-        console.error('Error searching location:', error);
-      }
     },
-    downloadLitchiCSV () {
-      console.log('downloadLitchiCSV', this.route)
-      const head = 'latitude,longitude,altitude(m),heading(deg),curvesize(m),rotationdir,gimbalmode,gimbalpitchangle,actiontype1,actionparam1,actiontype2,actionparam2,actiontype3,actionparam3,actiontype4,actionparam4,actiontype5,actionparam5,actiontype6,actionparam6,actiontype7,actionparam7,actiontype8,actionparam8,actiontype9,actionparam9,actiontype10,actionparam10,actiontype11,actionparam11,actiontype12,actionparam12,actiontype13,actionparam13,actiontype14,actionparam14,actiontype15,actionparam15,altitudemode,speed(m/s),poi_latitude,poi_longitude,poi_altitude(m),poi_altitudemode,photo_timeinterval,photo_distinterval'
-
-      if (this.route === null) return
-
-      const data = this.route.reduce((aco, cur) => {
-        return `${aco}\n` +
-          `${cur[0].geometry.coordinates[1].toFixed(8)},${cur[0].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,${this.stepH * 1000}\n` +
-          `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
-      }, head)
-
-      download('waypoints.csv', data)
-    }
-  },
-  computed: {
-    GDSW () {
-      return ((this.sensorWidth / 10) / this.imageWidth) * (this.flyHeight * 100) / (this.focalLength / 10)
+    watch: {
+        droneModel() {
+            if (this.droneModel === 'custom') return
+            const {
+                focalLength,
+                imageHeight,
+                imageWidth,
+                sensorHeight,
+                sensorWidth
+            } = this.droneModels[Number(this.droneModel)]
+            this.focalLength = focalLength
+            this.imageHeight = imageHeight
+            this.imageWidth = imageWidth
+            this.sensorHeight = sensorHeight
+            this.sensorWidth = sensorWidth
+        },
+        focalLength() {
+            emitter.emit('control.update')
+        },
+        imageWidth() {
+            emitter.emit('control.update')
+        },
+        imageHeight() {
+            emitter.emit('control.update')
+        },
+        sensorWidth() {
+            emitter.emit('control.update')
+        },
+        sensorHeight() {
+            emitter.emit('control.update')
+        },
+        flyHeight() {
+            emitter.emit('control.update')
+        },
+        overlap() {
+            emitter.emit('control.update')
+        },
+        sidelap() {
+            emitter.emit('control.update')
+        },
+        angle() {
+            emitter.emit('control.update')
+        },
+        showFrames() {
+            emitter.emit('control.update')
+        },
+        showCameras() {
+            emitter.emit('control.update')
+        }
     },
-    GDSH () {
-      return ((this.sensorHeight / 10) / this.imageHeight) * (this.flyHeight * 100) / (this.focalLength / 10)
-    },
-    CoverturaW () {
-      return (this.sensorWidth / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
-    },
-    CoverturaH () {
-      return (this.sensorHeight / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
-    },
-    stepW () {
-      return this.CoverturaW / 100000 * (1 - (this.sidelap / 100))
-    },
-    stepH () {
-      return this.CoverturaH / 100000 * (1 - (this.overlap / 100))
-    }
-  },
-  watch: {
-    droneModel () {
-      if (this.droneModel === 'custom') return
-      const { focalLength, imageHeight, imageWidth, sensorHeight, sensorWidth } = this.droneModels[Number(this.droneModel)]
-      this.focalLength = focalLength
-      this.imageHeight = imageHeight
-      this.imageWidth = imageWidth
-      this.sensorHeight = sensorHeight
-      this.sensorWidth = sensorWidth
-    },
-    focalLength () {
-      emitter.emit('control.update')
-    },
-    imageWidth () {
-      emitter.emit('control.update')
-    },
-    imageHeight () {
-      emitter.emit('control.update')
-    },
-    sensorWidth () {
-      emitter.emit('control.update')
-    },
-    sensorHeight () {
-      emitter.emit('control.update')
-    },
-    flyHeight () {
-      emitter.emit('control.update')
-    },
-    overlap () {
-      emitter.emit('control.update')
-    },
-    sidelap () {
-      emitter.emit('control.update')
-    },
-    angle () {
-      emitter.emit('control.update')
-    },
-    showFrames () {
-      emitter.emit('control.update')
-    },
-    showCameras () {
-      emitter.emit('control.update')
-    }
-  },
-  template: `
+    template: `
   <div>
     <span   
       class="absolute block p-1 m-2 left-0 top-0 material-symbols-outlined bg-[#FFF] rounded drop-shadow-md"
@@ -376,266 +399,284 @@ const Control = {
 const control = createApp(Control).mount('#control')
 
 const updateRoute = (draw, polygon, control) => {
-  if (!polygon) {
-    draw.changeMode('draw_polygon')
-    return
-  }
-
-  control.setArea(turf.area(polygon))
-  const {
-    CoverturaW,
-    CoverturaH,
-    angle,
-    showCameras,
-    showFrames,
-    stepW,
-    stepH
-  } = control
-
-  const route = genRoute(angle, stepW, polygon)
-  control.setRoute(route)
-
-  const points = route
-    .reduce((points, s) => {
-      const distance = turf.distance(s[0], s[1])
-      const angle = turf.bearing(s[0], s[1])
-
-      return [
-        ...points,
-        ...Array(Math.ceil(distance / stepH))
-          .fill(null)
-          .map((_, i) => turf.rhumbDestination(s[0], stepH * i, angle))
-      ]
-    }, [])
-
-  control.setImages(points.length)
-
-  points
-    .forEach(p => {
-      showFrames && draw.add(frame(CoverturaW, CoverturaH, angle, p))
-      showCameras && draw.add(p)
-    })
-
-  draw.add(
-    {
-      id: 'gf-route',
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: route
-          .map(s => [s[0].geometry.coordinates, s[1].geometry.coordinates])
-          .reduce((aco, cur) => [...aco, cur[0], cur[1]])
-      }
+    if (!polygon) {
+        draw.changeMode('draw_polygon')
+        return
     }
-  )
+
+    control.setArea(turf.area(polygon))
+    const {
+        CoverturaW,
+        CoverturaH,
+        angle,
+        showCameras,
+        showFrames,
+        stepW,
+        stepH
+    } = control
+
+    const route = genRoute(angle, stepW, polygon)
+    control.setRoute(route)
+
+    const points = route
+        .reduce((points, s) => {
+            const distance = turf.distance(s[0], s[1])
+            const angle = turf.bearing(s[0], s[1])
+
+            return [
+                ...points,
+                ...Array(Math.ceil(distance / stepH))
+                .fill(null)
+                .map((_, i) => turf.rhumbDestination(s[0], stepH * i, angle))
+            ]
+        }, [])
+
+    control.setImages(points.length)
+
+    points
+        .forEach(p => {
+            showFrames && draw.add(frame(CoverturaW, CoverturaH, angle, p))
+            showCameras && draw.add(p)
+        })
+
+    draw.add({
+        id: 'gf-route',
+        type: 'Feature',
+        properties: {},
+        geometry: {
+            type: 'LineString',
+            coordinates: route
+                .map(s => [s[0].geometry.coordinates, s[1].geometry.coordinates])
+                .reduce((aco, cur) => [...aco, cur[0], cur[1]])
+        }
+    })
 }
 
 const genRoute = (angle, step, polygon) => {
-  // Boundary box
-  const bbox = turf.bbox(polygon)
-  const pointA = turf.point([bbox[0], bbox[1]])
-  const pointB = turf.point([bbox[2], bbox[3]])
-  const pointC = turf.point([bbox[0], bbox[3]])
-  // const pointD = turf.point([bbox[2], bbox[1]])
+    // Boundary box
+    const bbox = turf.bbox(polygon)
+    const pointA = turf.point([bbox[0], bbox[1]])
+    const pointB = turf.point([bbox[2], bbox[3]])
+    const pointC = turf.point([bbox[0], bbox[3]])
+    // const pointD = turf.point([bbox[2], bbox[1]])
 
-  const alfa = turf.bearing(pointA, pointB)
-  const beta = Math.abs(90 - alfa)
-  const hypot = turf.distance(pointA, pointB)
+    const alfa = turf.bearing(pointA, pointB)
+    const beta = Math.abs(90 - alfa)
+    const hypot = turf.distance(pointA, pointB)
 
-  if (DEBUG) {
-    console.log('angle', angle)
-    console.log('α', alfa)
-    console.log('β', beta)
-    console.log('h', hypot)
-    console.log('C------B')
-    console.log('|++++/+|')
-    console.log('|+++/++|')
-    console.log('|α /β++|')
-    console.log('A______D')
+    if (DEBUG) {
+        console.log('angle', angle)
+        console.log('α', alfa)
+        console.log('β', beta)
+        console.log('h', hypot)
+        console.log('C------B')
+        console.log('|++++/+|')
+        console.log('|+++/++|')
+        console.log('|α /β++|')
+        console.log('A______D')
 
-    draw.add({
-      id: 'gf-debug-1',
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [bbox[0], bbox[1]],
-          [bbox[0], bbox[3]]
-        ]
-      }
-    })
+        draw.add({
+            id: 'gf-debug-1',
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [bbox[0], bbox[1]],
+                    [bbox[0], bbox[3]]
+                ]
+            }
+        })
 
-    draw.add({
-      id: 'gf-debug-2',
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [bbox[0], bbox[3]],
-          [bbox[2], bbox[3]]
-        ]
-      }
-    })
+        draw.add({
+            id: 'gf-debug-2',
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [bbox[0], bbox[3]],
+                    [bbox[2], bbox[3]]
+                ]
+            }
+        })
 
-    draw.add({
-      id: 'gf-debug-3',
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [bbox[0], bbox[3]],
-          [bbox[2], bbox[1]]
-        ]
-      }
-    })
+        draw.add({
+            id: 'gf-debug-3',
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [bbox[0], bbox[3]],
+                    [bbox[2], bbox[1]]
+                ]
+            }
+        })
 
-    draw.add({
-      id: 'gf-debug-4',
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [bbox[2], bbox[3]],
-          [bbox[0], bbox[1]]
-        ]
-      }
-    })
-  }
+        draw.add({
+            id: 'gf-debug-4',
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [
+                    [bbox[2], bbox[3]],
+                    [bbox[0], bbox[1]]
+                ]
+            }
+        })
+    }
 
-  const angleIdentity = angle % 180
-  const stepCorrection = angleIdentity > 90
-    ? Math.abs(step / Math.cos(Math.radianes((angleIdentity - 90) - alfa)))
-    : Math.abs(step / Math.cos(Math.radianes(angleIdentity - beta)))
+    const angleIdentity = angle % 180
+    const stepCorrection = angleIdentity > 90 ?
+        Math.abs(step / Math.cos(Math.radianes((angleIdentity - 90) - alfa))) :
+        Math.abs(step / Math.cos(Math.radianes(angleIdentity - beta)))
 
-  const segments = Math.floor(hypot / stepCorrection)
-  const origin = angleIdentity > 90 ? pointB : pointC
-  const angleH = angleIdentity > 90 ? 180 + alfa : 90 + beta
+    const segments = Math.floor(hypot / stepCorrection)
+    const origin = angleIdentity > 90 ? pointB : pointC
+    const angleH = angleIdentity > 90 ? 180 + alfa : 90 + beta
 
-  if (DEBUG) {
-    console.log(step, stepCorrection)
-  }
+    if (DEBUG) {
+        console.log(step, stepCorrection)
+    }
 
-  const route = Array(segments + 1).fill(null)
-    .map((_, i) => {
-      const p0 = turf.rhumbDestination(origin, stepCorrection * i, angleH)
-      const p1 = turf.rhumbDestination(p0, hypot, angleIdentity).geometry.coordinates
-      const p2 = turf.rhumbDestination(p0, hypot, angleIdentity + 180).geometry.coordinates
-      return {
-        type: 'Feature',
-        properties: {},
-        geometry: { type: 'LineString', coordinates: [p1, p2] }
-      }
-    })
-    .map(line => turf.lineIntersect(line, polygon).features
-      .sort((a, b) => b.geometry.coordinates.reduce((aco, cur) => aco + cur, 0) - a.geometry.coordinates.reduce((aco, cur) => aco + cur, 0))
-    )
-    .filter(intersects => intersects.length > 0 && intersects.length % 2 === 0)
-    .reduce((route, intersects) => {
-      return [
-        ...route,
-        ...Array(intersects.length / 2)
-          .fill([])
-          .map((_, i) => intersects.slice(2 * i, 2 * (i + 1)))
-          .map(s => [
-            s[0],
-            s[1]
-          ])
-      ]
-    }, [])
+    const route = Array(segments + 1).fill(null)
+        .map((_, i) => {
+            const p0 = turf.rhumbDestination(origin, stepCorrection * i, angleH)
+            const p1 = turf.rhumbDestination(p0, hypot, angleIdentity).geometry.coordinates
+            const p2 = turf.rhumbDestination(p0, hypot, angleIdentity + 180).geometry.coordinates
+            return {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: [p1, p2]
+                }
+            }
+        })
+        .map(line => turf.lineIntersect(line, polygon).features
+            .sort((a, b) => b.geometry.coordinates.reduce((aco, cur) => aco + cur, 0) - a.geometry.coordinates.reduce((aco, cur) => aco + cur, 0))
+        )
+        .filter(intersects => intersects.length > 0 && intersects.length % 2 === 0)
+        .reduce((route, intersects) => {
+            return [
+                ...route,
+                ...Array(intersects.length / 2)
+                .fill([])
+                .map((_, i) => intersects.slice(2 * i, 2 * (i + 1)))
+                .map(s => [
+                    s[0],
+                    s[1]
+                ])
+            ]
+        }, [])
 
-  sortRoute(route)
-    .map(([p1, p2]) => ({
-      type: 'Feature',
-      properties: {},
-      geometry: { type: 'LineString', coordinates: [p1.geometry.coordinates, p2.geometry.coordinates] }
-    }))
+    sortRoute(route)
+        .map(([p1, p2]) => ({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: [p1.geometry.coordinates, p2.geometry.coordinates]
+            }
+        }))
 
-  if (DEBUG) {
-    console.log(route)
-  }
+    if (DEBUG) {
+        console.log(route)
+    }
 
-  return sortRoute(route)
+    return sortRoute(route)
 }
 
 const frame = (CoverturaW, CoverturaH, angle, origin) => {
-  const hypot = Math.hypot(CoverturaH, CoverturaW) / 200000
-  const offsetAngle = (angle - 90) % 360
-  const teta = Math.grados(Math.atan2(CoverturaH, CoverturaW))
+    const hypot = Math.hypot(CoverturaH, CoverturaW) / 200000
+    const offsetAngle = (angle - 90) % 360
+    const teta = Math.grados(Math.atan2(CoverturaH, CoverturaW))
 
-  const x1 = turf.rhumbDestination(origin, hypot, teta + offsetAngle).geometry.coordinates
-  const x2 = turf.rhumbDestination(origin, hypot, 180 - teta + offsetAngle).geometry.coordinates
-  const x3 = turf.rhumbDestination(origin, hypot, 180 + teta + offsetAngle).geometry.coordinates
-  const x4 = turf.rhumbDestination(origin, hypot, 360 - teta + offsetAngle).geometry.coordinates
+    const x1 = turf.rhumbDestination(origin, hypot, teta + offsetAngle).geometry.coordinates
+    const x2 = turf.rhumbDestination(origin, hypot, 180 - teta + offsetAngle).geometry.coordinates
+    const x3 = turf.rhumbDestination(origin, hypot, 180 + teta + offsetAngle).geometry.coordinates
+    const x4 = turf.rhumbDestination(origin, hypot, 360 - teta + offsetAngle).geometry.coordinates
 
-  return {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: [[
-        [x1[0], x1[1]],
-        [x2[0], x2[1]],
-        [x3[0], x3[1]],
-        [x4[0], x4[1]],
-        [x1[0], x1[1]]
-      ]]
+    return {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+            type: 'Polygon',
+            coordinates: [
+                [
+                    [x1[0], x1[1]],
+                    [x2[0], x2[1]],
+                    [x3[0], x3[1]],
+                    [x4[0], x4[1]],
+                    [x1[0], x1[1]]
+                ]
+            ]
+        }
     }
-  }
 }
 
 // Not is the best route only findNearest
 const findNearest = (point, lines) => {
-  const { nearest, others } = lines
-    .map(l => ({ p: l, d: l.map(p => turf.distance(point, p)) }))
-    .reduce((result, current) => {
-      if (result.nearest === null) {
-        return {
-          ...result,
-          nearest: current
-        }
-      }
+    const {
+        nearest,
+        others
+    } = lines
+        .map(l => ({
+            p: l,
+            d: l.map(p => turf.distance(point, p))
+        }))
+        .reduce((result, current) => {
+            if (result.nearest === null) {
+                return {
+                    ...result,
+                    nearest: current
+                }
+            }
 
-      if (Math.min(...result.nearest.d) < Math.min(...current.d)) {
-        return {
-          ...result,
-          others: [...result.others, current]
-        }
-      }
+            if (Math.min(...result.nearest.d) < Math.min(...current.d)) {
+                return {
+                    ...result,
+                    others: [...result.others, current]
+                }
+            }
 
-      return { nearest: current, others: [result.nearest, ...result.others] }
-    }, { nearest: null, others: [] })
+            return {
+                nearest: current,
+                others: [result.nearest, ...result.others]
+            }
+        }, {
+            nearest: null,
+            others: []
+        })
 
-  return [
-    nearest.d[0] < nearest.d[1] ? nearest.p : [nearest.p[1], nearest.p[0]],
-    ...others.map(o => o.p)
-  ]
+    return [
+        nearest.d[0] < nearest.d[1] ? nearest.p : [nearest.p[1], nearest.p[0]],
+        ...others.map(o => o.p)
+    ]
 }
 
-const sortRoute = lines => lines.length === 1
-  ? lines
-  : [lines[0], ...sortRoute(findNearest(lines[0][1], lines.slice(1)))]
+const sortRoute = lines => lines.length === 1 ?
+    lines :
+    [lines[0], ...sortRoute(findNearest(lines[0][1], lines.slice(1)))]
 
 map.on('draw.create', e => {
-  const polygon = {
-    ...e.features[0],
-    id: 'polygon'
-  }
-  draw.getAll().features.map(f => draw.delete(f.id))
-  draw.add(polygon)
-  updateRoute(draw, polygon, control)
+    const polygon = {
+        ...e.features[0],
+        id: 'polygon'
+    }
+    draw.getAll().features.map(f => draw.delete(f.id))
+    draw.add(polygon)
+    updateRoute(draw, polygon, control)
 })
 
 map.on('draw.update', () => {
-  draw.getAll().features.map(f => f.id !== 'polygon' && draw.delete(f.id))
-  updateRoute(draw, draw.get('polygon'), control)
+    draw.getAll().features.map(f => f.id !== 'polygon' && draw.delete(f.id))
+    updateRoute(draw, draw.get('polygon'), control)
 })
 
 emitter.on('control.update', () => {
-  draw.getAll().features.map(f => f.id !== 'polygon' && draw.delete(f.id))
-  updateRoute(draw, draw.get('polygon'), control)
+    draw.getAll().features.map(f => f.id !== 'polygon' && draw.delete(f.id))
+    updateRoute(draw, draw.get('polygon'), control)
 })
