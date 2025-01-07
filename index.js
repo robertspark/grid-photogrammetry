@@ -241,7 +241,7 @@ const Control = {
       > close </span> 
     </header>
 	
-    <div class="text-center mb-3">
+    <div class="text-center mb-3 font-mono">
         <label for="location">Location:</label>
         <input 
           id="location" 
