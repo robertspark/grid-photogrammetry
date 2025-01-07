@@ -56,27 +56,17 @@ const initMap = () => {
                     maxzoom: 19,
                 },
             },
-            layers: [{
-                id: 'osm',
-                type: 'raster',
-                source: 'osm'
-            }],
+            layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
         },
         center: [0, 0], // [lng, lat]
         zoom: 2,
     });
 
     map.addControl(draw, 'top-right');
-    return {
-        map,
-        draw
-    };
+    return { map, draw };
 };
 
-const {
-    map,
-    draw
-} = initMap();
+const { map, draw } = initMap();
 
 const Control = {
     data() {
@@ -102,6 +92,43 @@ const Control = {
         };
     },
     methods: {
+        toggleMapStyle() {
+            const satelliteStyle = {
+                version: 8,
+                sources: {
+                    satellite: {
+                        type: 'raster',
+                        tiles: [
+                            'https://api.maptiler.com/tiles/satellite/{z}/{x}/{y}.jpg?key=YOUR_MAPTILER_API_KEY',
+                        ],
+                        tileSize: 256,
+                        attribution: '&copy; MapTiler &copy; OpenStreetMap Contributors',
+                        maxzoom: 19,
+                    },
+                },
+                layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }],
+            };
+
+            const mapStyle = {
+                version: 8,
+                sources: {
+                    osm: {
+                        type: 'raster',
+                        tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        tileSize: 256,
+                        attribution: '&copy; OpenStreetMap Contributors',
+                        maxzoom: 19,
+                    },
+                },
+                layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+            };
+
+            if (map.getStyle().layers[0].id === 'osm') {
+                map.setStyle(satelliteStyle);
+            } else {
+                map.setStyle(mapStyle);
+            }
+        },
         toogleShow() {
             this.show = !this.show
         },
@@ -243,18 +270,23 @@ const Control = {
 	
     <div class="text-center mb-3 font-mono">
         <label for="location">Location:</label>
-        <input 
-          id="location" 
-          type="text" 
-          class="border text-center w-48" 
+        <input
+          id="location"
+          type="text"
+          class="border text-center w-48"
           v-model="locationQuery"
           placeholder="Enter a location"
         />
-        <button 
+        <button
           class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2"
           @click="searchLocation"
-        >Search</button>
+          >Search</button> 
+        <button
+          class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2"
+          @click="toggleMapStyle"
+          >Toggle Map/Satellite View</button>
    </div>
+
    <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
       <label>Drone Model : </label>
       <span class="align-middle">
@@ -399,8 +431,8 @@ const updateRoute = (draw, polygon, control) => {
             return [
                 ...points,
                 ...Array(Math.ceil(distance / stepH))
-                .fill(null)
-                .map((_, i) => turf.rhumbDestination(s[0], stepH * i, angle))
+                    .fill(null)
+                    .map((_, i) => turf.rhumbDestination(s[0], stepH * i, angle))
             ]
         }, [])
 
@@ -536,12 +568,12 @@ const genRoute = (angle, step, polygon) => {
             return [
                 ...route,
                 ...Array(intersects.length / 2)
-                .fill([])
-                .map((_, i) => intersects.slice(2 * i, 2 * (i + 1)))
-                .map(s => [
-                    s[0],
-                    s[1]
-                ])
+                    .fill([])
+                    .map((_, i) => intersects.slice(2 * i, 2 * (i + 1)))
+                    .map(s => [
+                        s[0],
+                        s[1]
+                    ])
             ]
         }, [])
 
