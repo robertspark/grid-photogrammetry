@@ -7,12 +7,12 @@ const {
 const emitter = mitt()
 const DEBUG = false
 
-Math.grados = radianes => {
-    return radianes * 180 / Math.PI
+Math.degrees = radians => {
+    return radians * 180 / Math.PI
 }
 
-Math.radianes = grados => {
-    return Math.PI * grados / 180
+Math.radians = degrees => {
+    return Math.PI * degrees / 180
 }
 
 const download = (filename, data) => {
@@ -158,17 +158,17 @@ const Control = {
         GDSH() {
             return ((this.sensorHeight / 10) / this.imageHeight) * (this.flyHeight * 100) / (this.focalLength / 10)
         },
-        CoverturaW() {
+        CoverageW() {
             return (this.sensorWidth / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
         },
-        CoverturaH() {
+        CoverageH() {
             return (this.sensorHeight / 10) * (this.flyHeight * 100) / (this.focalLength / 10)
         },
         stepW() {
-            return this.CoverturaW / 100000 * (1 - (this.sidelap / 100))
+            return this.CoverageW / 100000 * (1 - (this.sidelap / 100))
         },
         stepH() {
-            return this.CoverturaH / 100000 * (1 - (this.overlap / 100))
+            return this.CoverageH / 100000 * (1 - (this.overlap / 100))
         }
     },
     watch: {
@@ -362,8 +362,8 @@ const Control = {
     <div class="font-mono mb-3 mx-2">
       <div>GDS<sub>w</sub> = {{Math.round(GDSW * 100) / 100}} cm </div> 
       <div>GDS<sub>h</sub> = {{Math.round(GDSH * 100) / 100}} cm </div> 
-      <div>Covertura<sub>w</sub> = {{Math.round(CoverturaW) / 100}} m </div> 
-      <div>Covertura<sub>h</sub> = {{Math.round(CoverturaH) / 100}} m </div> 
+      <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div> 
+      <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div> 
       <div>Area = {{area}} m² </div> 
       <div>Images = {{images}}</div> 
     </div>
@@ -390,8 +390,8 @@ const updateRoute = (draw, polygon, control) => {
 
     control.setArea(turf.area(polygon))
     const {
-        CoverturaW,
-        CoverturaH,
+        CoverageW,
+        CoverageH,
         angle,
         showCameras,
         showFrames,
@@ -419,7 +419,7 @@ const updateRoute = (draw, polygon, control) => {
 
     points
         .forEach(p => {
-            showFrames && draw.add(frame(CoverturaW, CoverturaH, angle, p))
+            showFrames && draw.add(frame(CoverageW, CoverageH, angle, p))
             showCameras && draw.add(p)
         })
 
@@ -514,8 +514,8 @@ const genRoute = (angle, step, polygon) => {
 
     const angleIdentity = angle % 180
     const stepCorrection = angleIdentity > 90 ?
-        Math.abs(step / Math.cos(Math.radianes((angleIdentity - 90) - alfa))) :
-        Math.abs(step / Math.cos(Math.radianes(angleIdentity - beta)))
+        Math.abs(step / Math.cos(Math.radians((angleIdentity - 90) - alfa))) :
+        Math.abs(step / Math.cos(Math.radians(angleIdentity - beta)))
 
     const segments = Math.floor(hypot / stepCorrection)
     const origin = angleIdentity > 90 ? pointB : pointC
@@ -573,10 +573,10 @@ const genRoute = (angle, step, polygon) => {
     return sortRoute(route)
 }
 
-const frame = (CoverturaW, CoverturaH, angle, origin) => {
-    const hypot = Math.hypot(CoverturaH, CoverturaW) / 200000
+const frame = (CoverageW, CoverageH, angle, origin) => {
+    const hypot = Math.hypot(CoverageH, CoverageW) / 200000
     const offsetAngle = (angle - 90) % 360
-    const teta = Math.grados(Math.atan2(CoverturaH, CoverturaW))
+    const teta = Math.degrees(Math.atan2(CoverageH, CoverageW))
 
     const x1 = turf.rhumbDestination(origin, hypot, teta + offsetAngle).geometry.coordinates
     const x2 = turf.rhumbDestination(origin, hypot, 180 - teta + offsetAngle).geometry.coordinates
