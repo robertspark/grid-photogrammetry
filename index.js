@@ -114,15 +114,6 @@ const Control = {
         setRoute(route) {
             this.route = route
         },
-        clearPolylines() {
-            const layers = map.getStyle().layers;
-            layers.forEach(layer => {
-                if (layer.id.startsWith('polyline')) {
-                    map.removeLayer(layer.id);
-                    map.removeSource(layer.id);
-                }
-            });
-        },
         async searchLocation() {
             if (!this.locationQuery.trim()) return;
 
@@ -263,9 +254,6 @@ const Control = {
           class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2"
           @click="searchLocation"
         >Search</button>
-        <button 
-	  class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2
-	  @click="clearPolylines">Clear Polylines</button>
    </div>
    <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
       <label>Drone Model : </label>
