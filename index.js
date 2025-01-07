@@ -223,160 +223,147 @@ const Control = {
     },
     template: `
   <div>
-    <span   
+   <span   
       class="absolute block p-1 m-2 left-0 top-0 material-symbols-outlined bg-[#FFF] rounded drop-shadow-md"
       v-on:click="toogleShow"
       v-bind:class="{ 'invisible' : show}"
-    > menu </span>
-  </div>
-  <div 
-    class="absolute p-2  translate-x-[-120%] w-100 mx-auto my-24 md:m-2 rounded drop-shadow-md z-10 bg-[#FFF]"
-    v-bind:class="{ 'translate-x-[0%]' : show}"
-    >
-    <header class="relative mx-5 mb-5">
+      > menu </span>
+</div>
+<div 
+   class="absolute p-2  translate-x-[-120%] w-100 mx-auto my-24 md:m-2 rounded drop-shadow-md z-10 bg-[#FFF]"
+   v-bind:class="{ 'translate-x-[0%]' : show}"
+   >
+   <header class="relative mx-5 mb-5">
       <h2 class="text-center mb-2">Grid Photogrammetry</h2>
       <span   
-        class="absolute right-0 top-0 material-symbols-outlined"
-        v-on:click="toogleShow"
-      > close </span> 
-    </header>
-	
-    <div class="text-center mb-3 font-mono">
-        <label for="location">Location:</label>
-        <input 
-          id="location" 
-          type="text" 
-          class="border text-center w-48" 
-          v-model="locationQuery"
-          placeholder="Enter a location"
-        />
-        <button 
-          class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2"
-          @click="searchLocation"
-        >Search</button>
+         class="absolute right-0 top-0 material-symbols-outlined"
+         v-on:click="toogleShow"
+         > close </span> 
+   </header>
+   <div class="text-center mb-3 font-mono">
+      <label for="location">Location:</label>
+      <input 
+         id="location" 
+         type="text" 
+         class="border text-center w-48" 
+         v-model="locationQuery"
+         placeholder="Enter a location"
+         />
+      <button 
+         class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded shadow-sm ml-2"
+         @click="searchLocation"
+         >Search</button>
    </div>
    <div class="grid grid-cols-2 w-80  md:mx-2 mb-5 font-mono">
       <label>Drone Model : </label>
       <span class="align-middle">
-        <select class="border block-inline text-left w-40" type="number" v-model="droneModel">
-          <option value="custom">Custom</option>
-          ${droneModels.map((e, i) => '<option value="' + i + '">' + e.name + '</option> ').join('')}
-        </select>
+         <select class="border block-inline text-left w-40" type="number" v-model="droneModel">
+            <option value="custom">Custom</option>
+            ${droneModels.map((e, i) => '
+            <option value="' + i + '">' + e.name + '</option>
+            ').join('')}
+         </select>
       </span>
-
       <label>Focal Length : </label>
       <span class="align-middle">
-        <input 
-          class="border block-inline text-right w-24" type="number"
-          v-model="focalLength"
-          max="100" min="0"
-          step="0.01"
-          :disabled="droneModel  !== 'custom'"
-        /> [mm]
+      <input 
+         class="border block-inline text-right w-24" type="number"
+         v-model="focalLength"
+         max="100" min="0"
+         step="0.01"
+         :disabled="droneModel  !== 'custom'"
+         /> [mm]
       </span>
-      
       <label>Image Width : </label>
       <span class="align-middle">
-        <input 
-          class="border block-inline text-right w-24" 
-          type="number" 
-          v-model="imageWidth" 
-          max="100000" 
-          min="0"  
-          step="1"
-          :disabled="droneModel  !== 'custom'"
-        /> [px]
+      <input 
+         class="border block-inline text-right w-24" 
+         type="number" 
+         v-model="imageWidth" 
+         max="100000" 
+         min="0"  
+         step="1"
+         :disabled="droneModel  !== 'custom'"
+         /> [px]
       </span>
-
       <label>Image Height : </label>
       <span class="align-middle">
-        <input 
-          class="border block-inline text-right w-24" 
-          type="number" 
-          v-model="imageHeight" 
-          max="100000" 
-          min="0"  
-          step="1"
-          :disabled="droneModel  !== 'custom'"
-        /> [px]
+      <input 
+         class="border block-inline text-right w-24" 
+         type="number" 
+         v-model="imageHeight" 
+         max="100000" 
+         min="0"  
+         step="1"
+         :disabled="droneModel  !== 'custom'"
+         /> [px]
       </span>
-
       <label>Sensor Width : </label>
       <span class="align-middle">
-        <input 
-          class="border block-inline text-right w-24" 
-          type="number" 
-          v-model="sensorWidth" 
-          max="100" 
-          min="0"  
-          step="0.01"
-          :disabled="droneModel  !== 'custom'"
-        /> [mm]
+      <input 
+         class="border block-inline text-right w-24" 
+         type="number" 
+         v-model="sensorWidth" 
+         max="100" 
+         min="0"  
+         step="0.01"
+         :disabled="droneModel  !== 'custom'"
+         /> [mm]
       </span>
-
       <label>Sensor Height : </label>
       <span class="align-middle">
-        <input 
-          class="border block-inline text-right w-24" 
-          type="number" 
-          v-model="sensorHeight" 
-          max="100" 
-          min="0"  
-          step="0.01"
-          :disabled="droneModel  !== 'custom'"
-        /> [mm]
+      <input 
+         class="border block-inline text-right w-24" 
+         type="number" 
+         v-model="sensorHeight" 
+         max="100" 
+         min="0"  
+         step="0.01"
+         :disabled="droneModel  !== 'custom'"
+         /> [mm]
       </span>
-
       <label>Fly Height : </label>
       <span class="align-middle">
-        <input class="border block-inline text-right w-24" type="number" v-model="flyHeight" max="1000" min="0"  step="10"/> [m]
+      <input class="border block-inline text-right w-24" type="number" v-model="flyHeight" max="1000" min="0"  step="10"/> [m]
       </span>
-
       <label>Angle : </label>
       <span class="align-middle">
-        <input class="border block-inline text-right w-24" type="number" v-model="angle" max="360" min="0"  step="1"/> [º]
+      <input class="border block-inline text-right w-24" type="number" v-model="angle" max="360" min="0"  step="1"/> [º]
       </span>
-
       <label>Overlap : </label>
       <span class="align-middle">
-        <input class="border block-inline text-right w-24" type="number" v-model="overlap" max="99" min="0"  step="1"/> [%]
+      <input class="border block-inline text-right w-24" type="number" v-model="overlap" max="99" min="0"  step="1"/> [%]
       </span>
-
       <label>Sidelap : </label>
       <span class="align-middle">
-        <input class="border block-inline text-right w-24" type="number" v-model="sidelap" max="99" min="0"  step="1"/> [%]
+      <input class="border block-inline text-right w-24" type="number" v-model="sidelap" max="99" min="0"  step="1"/> [%]
       </span>
-  
       <label>Show Frames : </label>
       <span class="align-middle">
-        <input type="checkbox" v-model="showFrames" />
+      <input type="checkbox" v-model="showFrames" />
       </span>
-
-
       <label>Show Cameras : </label>
       <span class="align-middle">
-        <input type="checkbox" v-model="showCameras" />
+      <input type="checkbox" v-model="showCameras" />
       </span>
-    </div>
-    
-    <div class="font-mono mb-3 mx-2">
-      <div>GDS<sub>w</sub> = {{Math.round(GDSW * 100) / 100}} cm </div> 
-      <div>GDS<sub>h</sub> = {{Math.round(GDSH * 100) / 100}} cm </div> 
-      <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div> 
-      <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div> 
-      <div>Area = {{area}} m² </div> 
-      <div>Images = {{images}}</div> 
-    </div>
-
-    <div class="text-center mb-3">
+   </div>
+   <div class="font-mono mb-3 mx-2">
+      <div>GDS<sub>w</sub> = {{Math.round(GDSW * 100) / 100}} cm </div>
+      <div>GDS<sub>h</sub> = {{Math.round(GDSH * 100) / 100}} cm </div>
+      <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div>
+      <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div>
+      <div>Area = {{area}} m² </div>
+      <div>Images = {{images}}</div>
+   </div>
+   <div class="text-center mb-3">
       <button 
-        class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
-        v-on:click="downloadLitchiCSV"
-      >
-        Download Litchi CSV
+         class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
+         v-on:click="downloadLitchiCSV"
+         >
+      Download Litchi CSV
       </button>
-    </div>
-  </div>
+   </div>
+</div>
   `
 }
 
