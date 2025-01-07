@@ -642,8 +642,7 @@ const findNearest = (point, lines) => {
 }
 
 const sortRoute = lines => lines.length === 1 ?
-    lines :
-    [lines[0], ...sortRoute(findNearest(lines[0][1], lines.slice(1)))]
+    lines : [lines[0], ...sortRoute(findNearest(lines[0][1], lines.slice(1)))]
 
 map.on('draw.create', e => {
     const polygon = {
