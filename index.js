@@ -386,7 +386,8 @@ const Control = {
       <div>GDS<sub>h</sub> = {{Math.round(GDSH * 100) / 100}} cm </div> 
       <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div> 
       <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div> 
-      <div>Area = {{area}} m² </div> 
+      <div>Area = {{area}} m² </div>
+      <div>Step = {{stepH}} m </div> 
       <div>Images = {{images}}</div> 
     </div>
     <div class="text-center mb-3">
