@@ -388,7 +388,7 @@ const Control = {
       <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div> 
       <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div> 
       <div>Area = {{area}} m² </div>
-      <div>Step = {{Math.round(stepH*1000)/100}} m </div> 
+      <div>Step = {{Math.round(stepH)/100}} m </div> 
       <div>Images = {{images}}</div> 
     </div>
     <div class="text-center mb-3">
