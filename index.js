@@ -85,6 +85,7 @@ const Control = {
             showFrames: false,
             showCameras: true,
             images: 0,
+	    H: 0,
             area: 0,
             route: null,
             show: true,
@@ -387,7 +388,7 @@ const Control = {
       <div>Coverage<sub>w</sub> = {{Math.round(CoverageW) / 100}} m </div> 
       <div>Coverage<sub>h</sub> = {{Math.round(CoverageH) / 100}} m </div> 
       <div>Area = {{area}} m² </div>
-      <div>Step = {{stepH}} m </div> 
+      <div>Step = {{Math.round(stepH*1000)/100}} m </div> 
       <div>Images = {{images}}</div> 
     </div>
     <div class="text-center mb-3">
