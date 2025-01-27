@@ -84,6 +84,7 @@ const Control = {
             angle: 270,
             showFrames: false,
             showCameras: true,
+	    showOrtho: false,
             images: 0,
 	    H: 0,
             area: 0,
@@ -371,7 +372,6 @@ const Control = {
       <span class="align-middle">
         <input class="border block-inline text-right w-24" type="number" v-model="sidelap" max="99" min="0"  step="1"/> [%]
       </span>
-  
       <label>Show Frames : </label>
       <span class="align-middle">
         <input type="checkbox" v-model="showFrames" />
@@ -379,6 +379,10 @@ const Control = {
       <label>Show Cameras : </label>
       <span class="align-middle">
         <input type="checkbox" v-model="showCameras" />
+      </span>
+      <label>Ortho+Nadir Export : </label>
+      <span class="align-middle">
+        <input type="checkbox" v-model="showOrtho" />
       </span>
     </div>
     
