@@ -84,7 +84,6 @@ const Control = {
             angle: 270,
             showFrames: false,
             showCameras: true,
-	    showOrtho: false,
             images: 0,
 	    H: 0,
             area: 0,
@@ -165,8 +164,8 @@ const Control = {
                 console.error('Error searching location:', error);
             }
         },
-        downloadLitchiCSV() {
-            console.log('downloadLitchiCSV', this.route)
+        downloadNadirLitchiCSV() {
+            console.log('downloadNadirLitchiCSV', this.route)
             const head = 'latitude,longitude,altitude(m),heading(deg),curvesize(m),rotationdir,gimbalmode,gimbalpitchangle,actiontype1,actionparam1,actiontype2,actionparam2,actiontype3,actionparam3,actiontype4,actionparam4,actiontype5,actionparam5,actiontype6,actionparam6,actiontype7,actionparam7,actiontype8,actionparam8,actiontype9,actionparam9,actiontype10,actionparam10,actiontype11,actionparam11,actiontype12,actionparam12,actiontype13,actionparam13,actiontype14,actionparam14,actiontype15,actionparam15,altitudemode,speed(m/s),poi_latitude,poi_longitude,poi_altitude(m),poi_altitudemode,photo_timeinterval,photo_distinterval'
 
             if (this.route === null) return
@@ -177,7 +176,7 @@ const Control = {
                     `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
             }, head)
 
-            download('waypoints.csv', data)
+            download('nadir_waypoints.csv', data)
         }
     },
     computed: {
@@ -380,10 +379,6 @@ const Control = {
       <span class="align-middle">
         <input type="checkbox" v-model="showCameras" />
       </span>
-      <label>Ortho+Nadir Export : </label>
-      <span class="align-middle">
-        <input type="checkbox" v-model="showOrtho" />
-      </span>
     </div>
     
     <div class="font-mono mb-3 mx-2">
@@ -398,9 +393,9 @@ const Control = {
     <div class="text-center mb-3">
       <button 
         class="px-4 py-2 font-semibold text-sm bg-sky-500 text-white rounded-none shadow-sm"
-        v-on:click="downloadLitchiCSV"
+        v-on:click="downloadNadirLitchiCSV"
       >
-        Download Litchi CSV
+        Download Nadir Litchi CSV
       </button>
     </div>
   </div>
