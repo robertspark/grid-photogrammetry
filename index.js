@@ -87,6 +87,7 @@ const Control = {
             images: 0,
 	    H: 0,
             area: 0,
+	    cameraAngle: -90,
             route: null,
             show: true,
             locationQuery: '',
@@ -172,8 +173,8 @@ const Control = {
 
             const data = this.route.reduce((aco, cur) => {
                 return `${aco}\n` +
-                    `${cur[0].geometry.coordinates[1].toFixed(8)},${cur[0].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,${this.stepH * 1000}\n` +
-                    `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,-90,5,-90,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
+                    `${cur[0].geometry.coordinates[1].toFixed(8)},${cur[0].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,${this.cameraAngle},5,${this.cameraAngle},-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,${this.stepH * 1000}\n` +
+                    `${cur[1].geometry.coordinates[1].toFixed(8)},${cur[1].geometry.coordinates[0].toFixed(8)},${this.flyHeight},0,0,0,0,${this.cameraAngle},5,${this.cameraAngle},-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,-1,-1`
             }, head)
 
             download('nadir_waypoints.csv', data)
@@ -389,6 +390,13 @@ const Control = {
       <div>Area = {{area}} m² </div>
       <div>Step = {{Math.round(stepH * 10000) / 10}} m </div> 
       <div>Images = {{images}}</div> 
+    </div>
+    <div class="text-center mb-3">
+      </span>
+      <label>Cam Angle : </label>
+      <span class="align-middle">
+        <input class="border block-inline text-right w-24" type="number" v-model="cameraAngle" max="0" min="-90"  step="1"/> [m]
+      </span>
     </div>
     <div class="text-center mb-3">
       <button 
