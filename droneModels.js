@@ -55,13 +55,6 @@ export default [{
     imageWidth: 4032,
     imageHeight: 3024
 }, {
-    name: 'DJI Mini 4 Pro (12mp)',
-    sensorWidth: 9.690912,
-    sensorHeight: 7.27776,
-    focalLength: 6.72,
-    imageWidth: 4032,
-    imageHeight: 3024
-}, {
     name: 'DJI Mini 3 & 3 Pro (48mp)',
     sensorWidth: 9.690912,
     sensorHeight: 7.27776,
